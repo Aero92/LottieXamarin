@@ -67,17 +67,31 @@ namespace Lottie.Forms.Droid
 
                 _animationView.SetOnClickListener(new ClickListener(e.NewElement));
 
-                if (!string.IsNullOrEmpty(e.NewElement.Animation))
-                {
-                    _animationView.SetAnimation(e.NewElement.Animation);
-                    Element.Duration = TimeSpan.FromMilliseconds(_animationView.Duration);
-                }
+                ConfigureAnimation(e.NewElement);
+            }
+        }
 
-                if (e.NewElement.AutoPlay) 
-                {
-                    e.NewElement.IsPlaying = true;
-                    _animationView.PlayAnimation();
-                }
+        private void ConfigureAnimation(AnimationView element)
+        {
+            if (!string.IsNullOrEmpty(element.AnimationJson))
+            {
+                _animationView.SetAnimationFromJson(element.AnimationJson);
+                Element.Duration = TimeSpan.FromMilliseconds(_animationView.Duration);
+            }
+            else if (!string.IsNullOrEmpty(element.Animation))
+            {
+                _animationView.SetAnimation(element.Animation);
+                Element.Duration = TimeSpan.FromMilliseconds(_animationView.Duration);
+            }
+            else
+            {
+                _animationView.ClearAnimation();
+            }
+
+            if (element.AutoPlay && _animationView.Animation != null)
+            {
+                element.IsPlaying = true;
+                _animationView.PlayAnimation();
             }
         }
 
@@ -172,13 +186,13 @@ namespace Lottie.Forms.Droid
             if (_animationView == null || Element == null)
                 return;
 
-            if (e.PropertyName == AnimationView.AnimationProperty.PropertyName && !string.IsNullOrEmpty(Element.Animation))
+            if (e.PropertyName == AnimationView.AnimationJsonProperty.PropertyName)
             {
-                _animationView.SetAnimation(Element.Animation);
-                Element.Duration = TimeSpan.FromMilliseconds(_animationView.Duration);
-
-                if (Element.AutoPlay) 
-                    _animationView.PlayAnimation();
+                ConfigureAnimation(Element);
+            }
+            if (e.PropertyName == AnimationView.AnimationProperty.PropertyName)
+            {
+                ConfigureAnimation(Element);
             }
 
             if (e.PropertyName == AnimationView.SpeedProperty.PropertyName)

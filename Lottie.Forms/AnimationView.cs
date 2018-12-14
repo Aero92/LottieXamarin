@@ -23,6 +23,9 @@ namespace Lottie.Forms
         public static readonly BindableProperty AnimationProperty = BindableProperty.Create(nameof(Animation),
             typeof(string), typeof(AnimationView), default(string));
 
+        public static readonly BindableProperty AnimationJsonProperty = BindableProperty.Create(nameof(AnimationJson),
+            typeof(string), typeof(AnimationView), default(string));
+
         public static readonly BindableProperty AutoPlayProperty = BindableProperty.Create(nameof(AutoPlay),
             typeof(bool), typeof(AnimationView), default(bool));
         
@@ -51,6 +54,12 @@ namespace Lottie.Forms
         {
             get { return (string) GetValue(AnimationProperty); }
             set { SetValue(AnimationProperty, value); }
+        }
+
+        public string AnimationJson
+        {
+            get { return (string)GetValue(AnimationJsonProperty); }
+            set { SetValue(AnimationJsonProperty, value); }
         }
 
         public TimeSpan Duration

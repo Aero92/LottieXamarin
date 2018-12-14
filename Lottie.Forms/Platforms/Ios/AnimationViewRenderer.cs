@@ -113,13 +113,35 @@ namespace Lottie.Forms.iOS.Renderers
 
         private void InitAnimationViewForElement(AnimationView theElement)
         {
-            _animationView = new LOTAnimationView(NSUrl.FromFilename(theElement.Animation))
+            if (!string.IsNullOrEmpty(theElement.AnimationJson))
             {
-                AutoresizingMask = UIViewAutoresizing.All,
-                ContentMode = UIViewContentMode.ScaleAspectFit,
-                LoopAnimation = theElement.Loop,
-                AnimationSpeed = theElement.Speed
-            };
+                var jsonData = new NSData(theElement.AnimationJson, NSDataBase64DecodingOptions.IgnoreUnknownCharacters);
+                var jsonDictionary = (NSDictionary)NSJsonSerialization.Deserialize(jsonData, NSJsonReadingOptions.MutableContainers, out var error);
+                if (error == null)
+                {
+                    _animationView = LOTAnimationView.AnimationFromJSON(jsonDictionary);
+                }
+                else if (!string.IsNullOrEmpty(theElement.Animation))
+                {
+                    _animationView = new LOTAnimationView(NSUrl.FromFilename(theElement.Animation));
+                }
+                else
+                {
+                    _animationView = new LOTAnimationView();
+                }
+            }
+            else if (!string.IsNullOrEmpty(theElement.Animation))
+            {
+                _animationView = new LOTAnimationView(NSUrl.FromFilename(theElement.Animation));
+            }
+            else
+            {
+                _animationView = new LOTAnimationView();
+            }
+            _animationView.AutoresizingMask = UIViewAutoresizing.All;
+            _animationView.ContentMode = UIViewContentMode.ScaleAspectFit;
+            _animationView.LoopAnimation = theElement.Loop;
+            _animationView.AnimationSpeed = theElement.Speed;
 
             _gestureRecognizer = new UITapGestureRecognizer(theElement.Click);
             _animationView.AddGestureRecognizer(_gestureRecognizer);
