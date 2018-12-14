@@ -48,10 +48,7 @@ namespace Lottie.Forms.iOS.Renderers
             e.NewElement.OnPlayProgressSegment += OnPlayProgressSegment;
             e.NewElement.OnPlayFrameSegment += OnPlayFrameSegment;
 
-            if (!string.IsNullOrEmpty(e.NewElement.Animation))
-            {
-                InitAnimationViewForElement(e.NewElement);
-            }
+            InitAnimationViewForElement(e.NewElement);
         }
 
         private void OnPlay(object sender, EventArgs e)
@@ -85,7 +82,13 @@ namespace Lottie.Forms.iOS.Renderers
             if (Element == null)
                 return;
 
-            if (e.PropertyName == AnimationView.AnimationProperty.PropertyName && !string.IsNullOrEmpty(Element.Animation))
+            if (e.PropertyName == AnimationView.AnimationJsonProperty.PropertyName)
+            {
+                _animationView?.RemoveFromSuperview();
+                _animationView?.RemoveGestureRecognizer(_gestureRecognizer);
+                InitAnimationViewForElement(Element);
+            }
+            if (e.PropertyName == AnimationView.AnimationProperty.PropertyName)
             {
                 _animationView?.RemoveFromSuperview();
                 _animationView?.RemoveGestureRecognizer(_gestureRecognizer);
@@ -115,20 +118,9 @@ namespace Lottie.Forms.iOS.Renderers
         {
             if (!string.IsNullOrEmpty(theElement.AnimationJson))
             {
-                var jsonData = new NSData(theElement.AnimationJson, NSDataBase64DecodingOptions.IgnoreUnknownCharacters);
-                var jsonDictionary = (NSDictionary)NSJsonSerialization.Deserialize(jsonData, NSJsonReadingOptions.MutableContainers, out var error);
-                if (error == null)
-                {
-                    _animationView = LOTAnimationView.AnimationFromJSON(jsonDictionary);
-                }
-                else if (!string.IsNullOrEmpty(theElement.Animation))
-                {
-                    _animationView = new LOTAnimationView(NSUrl.FromFilename(theElement.Animation));
-                }
-                else
-                {
-                    _animationView = new LOTAnimationView();
-                }
+                var jsonData = NSData.FromString(theElement.AnimationJson);
+                var jsonDictionary = (NSDictionary)NSJsonSerialization.Deserialize(jsonData, 0, out var error);
+                _animationView = LOTAnimationView.AnimationFromJSON(jsonDictionary);
             }
             else if (!string.IsNullOrEmpty(theElement.Animation))
             {
