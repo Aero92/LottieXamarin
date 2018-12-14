@@ -93,6 +93,10 @@ namespace Lottie.Forms.Droid
                 element.IsPlaying = true;
                 _animationView.PlayAnimation();
             }
+            else
+            {
+                element.IsPlaying = false;
+            }
         }
 
         private void OnPlay(object sender, EventArgs e)
