@@ -128,6 +128,7 @@ namespace Lottie.Forms.iOS.Renderers
 
             if (theElement.AutoPlay)
             {
+                theElement.IsPlaying = true;
                 _animationView.PlayWithCompletion(PlaybackFinishedIfActually);
             }
 

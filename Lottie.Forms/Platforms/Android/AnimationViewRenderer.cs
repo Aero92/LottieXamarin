@@ -74,7 +74,10 @@ namespace Lottie.Forms.Droid
                 }
 
                 if (e.NewElement.AutoPlay) 
+                {
+                    e.NewElement.IsPlaying = true;
                     _animationView.PlayAnimation();
+                }
             }
         }
 
