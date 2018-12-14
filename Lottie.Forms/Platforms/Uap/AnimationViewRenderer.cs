@@ -1,4 +1,7 @@
 ﻿using System;
+
+// Disable UWP - I'm not using it and don't really have time to debug the missing references.
+/*
 using System.ComponentModel;
 using Lottie.Forms;
 using Lottie.Forms.EventArguments;
@@ -214,3 +217,4 @@ namespace Lottie.Forms.UWP.Renderers
         }
     }
 }
+*/
